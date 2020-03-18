@@ -36,6 +36,13 @@ public class Board {
 		this.columns = columns;
 	}
 	
+	public Piece piece(int row, int column) { 
+		// Retorna apenas a PEÇA que estiver na posição da matriz;
+		// É puxado de um FOR na classe ChessMatch. Em seguida é feito o Downcasting de Piece para ChessPiece;
+		return pieces[row][column]; 
+	}
 	
-	
+	public Piece piece(Position position) {
+		return pieces[position.getRow()][position.getColumn()];
+	}
 }
