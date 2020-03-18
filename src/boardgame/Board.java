@@ -45,4 +45,14 @@ public class Board {
 	public Piece piece(Position position) {
 		return pieces[position.getRow()][position.getColumn()];
 	}
+	
+	// Recebe uma peça e uma posição. Responsável por colocar a peça na posição do tabuleiro.
+	public void placePiece(Piece piece, Position position) {
+		// Vai na matriz de peças do TABULEIRO e atribui a peça à posição
+		// Lê-se: Na matriz de peças do tabuleiro, na posição recebida pelo método, recebe uma peça.
+		pieces[position.getRow()][position.getColumn()] = piece;
+		// A posição da peça é acessível diretamente por estar no mesmo pacote de TABULEIRO(boardgame)
+		piece.position = position;
+	}
+	
 }
