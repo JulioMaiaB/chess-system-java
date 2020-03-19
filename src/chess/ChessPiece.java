@@ -3,14 +3,16 @@ package chess;
 import boardgame.Board;
 import boardgame.Piece;
 
-public class ChessPiece extends Piece {
+// Essa classe é uma subclasse da classe Piece. Terá a COR e  também outros elementos.
 
-	// Essa classe é uma subclasse da classe Piece. Terá a COR e outros elementos também
+public class ChessPiece extends Piece {
 	
-	private Color color; // Cor da peça de Xadrez {BLACK, WHITE};
+	// Cor da peça de Xadrez {BLACK, WHITE};
+	private Color color; 
 	
 	public ChessPiece(Board board, Color color) {
-		super(board); // A peça reconhece o tabuleiro onde ela está
+		// A peça reconhece o tabuleiro onde ela está
+		super(board); 
 		this.color = color;
 	}
 	

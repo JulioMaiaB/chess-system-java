@@ -2,7 +2,7 @@ package chess;
 
 import boardgame.Position;
 
-// Classe que determina a posição na classe de xadrez. Exemplo: a1, d5, h4, etc.
+// Classe que determina as posição na classe de Xadrez. Exemplo: a1, d5, h4, etc.
 public class ChessPosition {
 	
 	private char column;
@@ -16,7 +16,8 @@ public class ChessPosition {
 		this.column = column;
 		this.row = row;
 	}
-
+	
+	// Getters e Setters: os métodos setters foram apagados
 	public char getColumn() {
 		return column;
 	}
@@ -25,14 +26,15 @@ public class ChessPosition {
 		return row;
 	}
 
-	// Converte a posição do xadrez (ChessPosition) para a posição normal (Position)
+	// Converte a posição do xadrez (ChessPosition) para a posição normal (Position).
 	protected Position toPosition() {
 		// Foi utilizado o conceito de UNICODE para fazer as comparações entre variaveis do tipo char.
-		return new Position(8 - row, column /*que é um char*/ - 'a');
+		return new Position(8 - row, column - 'a');
 	}
 	
-	// Converte a posição normal (Position)  para a posição do xadrez (ChessPosition)
+	// Converte a posição normal (Position) para a posição do xadrez (ChessPosition).
 	protected static ChessPosition fromPosition(Position position) {
+		// OBS: Não entendi c
 		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());
 	}
 	

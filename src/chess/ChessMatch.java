@@ -8,17 +8,20 @@ import chess.pieces.Rook;
 
 public class ChessMatch {
 
-	private Board board; // Partida de xadrez precisa ter um tabuleiro
+	// Partida de xadrez precisa ter um tabuleiro
+	private Board board; 
 	
 	public ChessMatch() {
-		board = new Board(8,8); // Importante entender: quem precisar saber a dimensão do jogo de xadrez é a classe ChessMatch
+		// Importante entender: quem precisar saber a dimensão do jogo de xadrez é a classe ChessMatch
+		board = new Board(8,8); 
 		initialSetup();
 	}
 	
-	// - Método que retornará uma matriz de peças de xadrez correspondentes a esta partida (ChessMatch);
-	// - Para a aplicação (application), será liberado as peças do tipo ChessPiece (e não Piece) pois é um desenvolvimento em camadas;
-	// - Por isso, será necessário liberar para o programa uma matriz do tipo ChessPiece, da camada de Xadrez (chess) e não do tabuleiro
-	// (board) - LIBERAR PARA A APLICAÇÃO UMA PEÇA CHESSPIECE
+	/* - Método que retornará uma matriz de peças de xadrez correspondentes a esta partida (ChessMatch);
+	   - Para a aplicação (application), será liberado as peças do tipo ChessPiece (e não Piece) pois é um desenvolvimento em camadas;
+	   - Sendo assim, será necessário liberar para o programa uma matriz do tipo ChessPiece, da camada de Xadrez (chess) e não do tabuleiro
+		 (board) 
+		 OBS: LIBERA PARA A APLICAÇÃO UMA PEÇA CHESSPIECE*/
 	public ChessPiece[][] getPieces() {
 		// Quantidade de linhas e colunas do tabuleiro é o tamanho da matriz
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()]; 
@@ -33,14 +36,25 @@ public class ChessMatch {
 	
 	// Método vai receber as coordenadas do xadrez
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
+		// Converte posição de xadrez para posição da matriz 
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
 	
 	// Método responsável por iniciar a partida de xadrez colocando as peças no tabuleiro
 	private void initialSetup() {
-		placeNewPiece('e', 1, new King(board, Color.WHITE));
-		placeNewPiece('e', 8, new King(board, Color.BLACK));
-		placeNewPiece('a', 1, new Rook(board, Color.WHITE));
+		placeNewPiece('c', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('c', 2, new Rook(board, Color.WHITE));
+        placeNewPiece('d', 2, new Rook(board, Color.WHITE));
+        placeNewPiece('e', 2, new Rook(board, Color.WHITE));
+        placeNewPiece('e', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('d', 1, new King(board, Color.WHITE));
+
+        placeNewPiece('c', 7, new Rook(board, Color.BLACK));
+        placeNewPiece('c', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('d', 7, new Rook(board, Color.BLACK));
+        placeNewPiece('e', 7, new Rook(board, Color.BLACK));
+        placeNewPiece('e', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('d', 8, new King(board, Color.BLACK));
 	}
 	
 }
