@@ -34,7 +34,7 @@ public class ChessPosition {
 	
 	// Converte a posição normal (Position) para a posição do xadrez (ChessPosition).
 	protected static ChessPosition fromPosition(Position position) {
-		// OBS: Não entendi c
+		// OBS: Não entendi
 		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());
 	}
 	

@@ -62,6 +62,24 @@ public class Board {
 		piece.position = position;
 	}
 	
+	// Remove uma peça do tabuleiro
+	public Piece removePiece(Position position) {
+		// Se a posição não existir
+		if(!positionExists(position)) {
+			throw new BoardException("Position not on the board");
+		}
+		// Se não tiver nenhuma peça na posição
+		if(piece(position) == null) {
+			return null;
+		}
+		// cria uma variável auxiliar pra tirar uma peça da matriz pieces
+		Piece aux = piece(position);
+		aux.position = null;
+		pieces[position.getRow()][position.getColumn()] = null;
+		// Retorna a peça que estava na matriz
+		return aux;
+	}
+	
 	/* - Método auxiliar que recebe uma linha e uma coluna;
 	   - Este método foi criado, porque em algum momento da classe, vai ter um momento que será mais fácil testar pela linha e pela coluna
 	     do que pela posição; */
