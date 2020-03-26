@@ -1,6 +1,6 @@
 package boardgame;
 
-public class Piece {
+public abstract class Piece {
 	
 	// Não é a posição do Xadez e por isso é PROTECTED. É uma posição simples de uma Matriz
 	protected Position position; 
@@ -19,4 +19,24 @@ public class Piece {
 		return board;
 	}
 	
+	public abstract boolean[][] possibleMoves();
+	
+	
+	// Método concreto que utiliza um método abstrato - chamado de hook methods
+	public boolean posibleMove(Position position) {
+		return possibleMoves()[position.getRow()][position.getColumn()];
+	}
+	
+	// Verifica se a peça está travada sou sem movimento
+	public boolean isThereAnyPossibleMove() {
+		boolean[][] mat = possibleMoves();
+		for(int i = 0; i < mat.length; i++) {
+			for(int j = 0; j < mat.length; j++) {
+				if(mat[i][j]) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

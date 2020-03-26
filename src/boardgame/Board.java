@@ -49,7 +49,7 @@ public class Board {
 		return pieces[position.getRow()][position.getColumn()];
 	}
 	
-	// Recebe uma peça e uma posição e é responsável por colocar a peça na posição certa no tabuleiro.
+	// Recebe uma peça e uma posição destino e é responsável por colocar a peça na posição certa no tabuleiro.
 	public void placePiece(Piece piece, Position position) {
 		// Antes de colocar uma peça na posição, é preciso verificar se ja existe uma peça nessa posição
 		if (thereIsAPiece(position)) {
