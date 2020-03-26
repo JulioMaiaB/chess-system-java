@@ -19,17 +19,18 @@ public abstract class Piece {
 		return board;
 	}
 	
+	// Método abstrato que futuramente será chamado por um método concreto desta classe
 	public abstract boolean[][] possibleMoves();
 	
 	
-	// Método concreto que utiliza um método abstrato - chamado de hook methods
-	public boolean posibleMove(Position position) {
+	// Método concreto que utiliza um método abstrato - também de chamado de Hook Methods
+	public boolean possibleMove(Position position) {
 		return possibleMoves()[position.getRow()][position.getColumn()];
 	}
 	
-	// Verifica se a peça está travada sou sem movimento
+	// Verifica se a peça está travada ou sem movimento
 	public boolean isThereAnyPossibleMove() {
-		boolean[][] mat = possibleMoves();
+		boolean[][] mat = possibleMoves(); // Por enquanto, sempre retorna falso
 		for(int i = 0; i < mat.length; i++) {
 			for(int j = 0; j < mat.length; j++) {
 				if(mat[i][j]) {

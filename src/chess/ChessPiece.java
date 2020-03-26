@@ -2,6 +2,7 @@ package chess;
 
 import boardgame.Board;
 import boardgame.Piece;
+import boardgame.Position;
 
 // Essa classe é uma subclasse da classe Piece. Terá a COR e  também outros elementos.
 
@@ -20,5 +21,12 @@ public abstract class ChessPiece extends Piece {
 	public Color getColor() {
 		return color;
 	}
-
+	
+	// Verifica se possui uma peça oponente no tabuleiro
+	protected boolean isThereOpponentPiece(Position position) {
+		ChessPiece p = (ChessPiece)getBoard().piece(position);
+		// Verifica se tem uma pela e se ela é diferente da cor da peça atual
+		return p != null && p.getColor() != color;
+	}
+	
 }
