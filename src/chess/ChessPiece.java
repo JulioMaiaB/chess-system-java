@@ -8,11 +8,9 @@ import boardgame.Position;
 
 public abstract class ChessPiece extends Piece {
 	
-	// Cor da peça de Xadrez {BLACK, WHITE};
-	private Color color; 
+	private Color color; //{Black, White}
 	
 	public ChessPiece(Board board, Color color) {
-		// A peça reconhece o tabuleiro onde ela está
 		super(board); 
 		this.color = color;
 	}
@@ -22,10 +20,8 @@ public abstract class ChessPiece extends Piece {
 		return color;
 	}
 	
-	// Verifica se possui uma peça oponente no tabuleiro
 	protected boolean isThereOpponentPiece(Position position) {
-		ChessPiece p = (ChessPiece)getBoard().piece(position);
-		// Verifica se tem uma pela e se ela é diferente da cor da peça atual
+		ChessPiece p = (ChessPiece)getBoard().piece(position); //Retorna a peça na posição Position
 		return p != null && p.getColor() != color;
 	}
 	

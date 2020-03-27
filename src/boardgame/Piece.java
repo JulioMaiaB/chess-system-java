@@ -2,10 +2,9 @@ package boardgame;
 
 public abstract class Piece {
 	
-	// Não é a posição do Xadez e por isso é PROTECTED. É uma posição simples de uma Matriz
-	protected Position position; 
-	// A peça conhece o tabuleiro onde ela está
-	private Board board; 
+	
+	protected Position position; // Não é a posição do Xadez. É uma posição simples de uma Matriz
+	private Board board; // A peça conhece o tabuleiro onde ela está
 	
 	// Construtor: Só é passado o board (tabuleiro) no construtor pois a posição inicial da peça será NULA
 	public Piece(Board board) { 
@@ -13,24 +12,19 @@ public abstract class Piece {
 		this.position = null;
 	}
 
-	/* - Não há um setBoard para não permitir que o tabuleiro seja alterado;
-	   - Será um getter do tipo PROTECTED para apenas subclasses e classes do mesmo pacote terem acesso; */
 	protected Board getBoard() {
 		return board;
 	}
 	
-	// Método abstrato que futuramente será chamado por um método concreto desta classe
 	public abstract boolean[][] possibleMoves();
 	
-	
-	// Método concreto que utiliza um método abstrato - também de chamado de Hook Methods
 	public boolean possibleMove(Position position) {
 		return possibleMoves()[position.getRow()][position.getColumn()];
 	}
 	
 	// Verifica se a peça está travada ou sem movimento
 	public boolean isThereAnyPossibleMove() {
-		boolean[][] mat = possibleMoves(); // Por enquanto, sempre retorna falso
+		boolean[][] mat = possibleMoves();
 		for(int i = 0; i < mat.length; i++) {
 			for(int j = 0; j < mat.length; j++) {
 				if(mat[i][j]) {

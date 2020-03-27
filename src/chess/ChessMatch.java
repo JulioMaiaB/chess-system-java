@@ -6,8 +6,6 @@ import boardgame.Position;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
-// Essa classe é o coração do sistema de Xadrez. Nesta classe terão todas as regras do jogo de xadrez
-
 public class ChessMatch {
 
 	// Partida de xadrez precisa ter um tabuleiro
@@ -36,56 +34,47 @@ public class ChessMatch {
 		return mat;
 	}
 	
-	// Move uma peça de uma origem para um desitno
+	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
+		Position position = sourcePosition.toPosition();
+		validateSourcePosition(position);
+		return board.piece(position).possibleMoves();
+	}
+	
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
-		// Cria duas variáveis para pegar a posição do xadrez e converter para a posição da matriz através do toPosition().
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
-		// Valida se na posição de origem tem uma peça, caso não exista lança uma exceção
 		validateSourcePosition(source);
-		// Recebe a posição de origem e destino para validar a posição de destino
 		validateTargetPosition(source, target);
-		Piece capturedPiece = makeMove(source, target);//makeMove é responsável por realizar o movimento da peça
-		return (ChessPiece) capturedPiece;
+		Piece capturedPiece = makeMove(source, target);
+		return (ChessPiece) capturedPiece; //Porquê retorna a peça capturada ?
 	}
 	
 	private Piece makeMove(Position source, Position target) {
-		// Colocar o valor null na posição da matriz de peças da classe board
 		Piece p = board.removePiece(source);
 		Piece capturedPiece = board.removePiece(target);
 		board.placePiece(p, target);
 		return capturedPiece;
 	}
 	
-	// Método auxiliar para validar se a posição inicial tem uma peça
 	private void validateSourcePosition(Position position) {
 		if(!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position");
 		}
-		// Verifica se a peça origem tem um movimento possivel
 		if(!board.piece(position).isThereAnyPossibleMove()) {
 			throw new ChessException("There is no possible moves for the chosen piece");
 		}
 	}
 	
-	// Valida se a posição de destino é válida em relação à posição de origem
-	// Para isso, basta testar se a posição de destino do parâmetro é um movimento possível em relação à peça que estiver na posição de origem.
 	private void validateTargetPosition(Position source, Position target) {
-		// Chama o board e recebe a peça (através do método piece) na posição de origem (source), e a partir dessa peça chama o possibleMove no destino (target).
-		// Se a peça desta origem não tiver o destino como movimento possível, lança uma exceção.
-		// OBS: TIVE DIFICULDADE PARA ENTENDER ESSA CONDIÇÃO
 		if(!board.piece(source).possibleMove(target)) { 
 			throw new ChessException("The chosen piece can't move to target position");
 		}
 	}
 	
-	// Método vai receber as coordenadas do xadrez
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
-		// Converte posição de xadrez para posição da matriz 
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
 	
-	// Método responsável por iniciar a partida de xadrez colocando as peças no tabuleiro
 	private void initialSetup() {
 		placeNewPiece('c', 1, new Rook(board, Color.WHITE));
         placeNewPiece('c', 2, new Rook(board, Color.WHITE));
