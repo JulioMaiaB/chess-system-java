@@ -34,7 +34,7 @@ public class ChessPosition {
 	// Converte a posição normal (Position) para a posição do xadrez (ChessPosition).
 	protected static ChessPosition fromPosition(Position position) {
 		// OBS: Não entendi
-		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());
+		return new ChessPosition((char)('a' + position.getColumn()), 8 - position.getRow());
 	}
 	
 	// Foi necessário utilizar um macete utilizando uma concatenação de String vazia "" para o compilador entender que se trata de uma string
