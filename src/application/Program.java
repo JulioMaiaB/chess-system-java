@@ -19,7 +19,7 @@ public class Program {
 		List<ChessPiece> captured = new ArrayList<>();
 		
 		
-		while(true) {
+		while(!chessMatch.getCheckmate()) { // O programa roda enquanto o checkmate for igual a false
 			try {		
 				UI.clearScreen();
 				UI.printMatch(chessMatch, captured);
@@ -34,7 +34,6 @@ public class Program {
 				System.out.print("Target: ");
 				ChessPosition target = UI.readChessPosition(sc);
 				
-				// O  vai ser feito com essa peça capturada ? Cenas do próximo capítulo
 				ChessPiece capturedPiece = chessMatch.performChessMove(source, target);
 				
 				if(capturedPiece != null) { // significa que alguma peça foi capturada
@@ -50,6 +49,8 @@ public class Program {
 				sc.nextLine(); // Usado para apertar ENTER quando o programa parar
 			}
 		}
+		UI.clearScreen();
+		UI.printMatch(chessMatch, captured);
 	}
 
 }
