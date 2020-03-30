@@ -7,14 +7,26 @@ import chess.pieces.King;
 import chess.pieces.Rook;
 
 public class ChessMatch {
-
-	// Partida de xadrez precisa ter um tabuleiro
-	private Board board; 
+	
+	
+	private int turn; // Contagem de turno da partida
+	private Color currentPlayer; // Indica se a vez de jogar é da cor branca ou preta
+	private Board board; // Partida de xadrez precisa ter um tabuleiro 
 	
 	public ChessMatch() {
 		// Importante entender: quem precisar saber a dimensão do jogo de xadrez é a classe ChessMatch
 		board = new Board(8,8); 
 		initialSetup();
+		this.turn = 1;
+		this.currentPlayer = Color.WHITE;
+	}
+	
+	public int getTurn() {
+		return turn;
+	}
+	
+	public Color getCurrentPlayer() {
+		return currentPlayer;
 	}
 	
 	/* - Método que retornará uma matriz de peças de xadrez correspondentes a esta partida (ChessMatch);
@@ -46,6 +58,7 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target);
+		nextTurn();
 		return (ChessPiece) capturedPiece; //Porquê retorna a peça capturada ?
 	}
 	
@@ -60,9 +73,17 @@ public class ChessMatch {
 		if(!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position");
 		}
+		if(currentPlayer != ((ChessPiece)board.piece(position)).getColor()) { // Downcasting de Piece para ChessPiece para usar o getColor()
+			throw new ChessException("The chosen piece is not yours!");
+		}
 		if(!board.piece(position).isThereAnyPossibleMove()) {
 			throw new ChessException("There is no possible moves for the chosen piece");
 		}
+	}
+	
+	private void nextTurn() {
+		turn++; // Aumenta os turnos
+		currentPlayer = (getCurrentPlayer() == Color.WHITE) ? Color.BLACK : Color.WHITE; // Operador condicional ternário
 	}
 	
 	private void validateTargetPosition(Position source, Position target) {
@@ -74,6 +95,8 @@ public class ChessMatch {
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
+	
+	// ChessPiece piece = new Rook(board, Color.WHITE));
 	
 	private void initialSetup() {
 		placeNewPiece('c', 1, new Rook(board, Color.WHITE));
