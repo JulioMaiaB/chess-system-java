@@ -9,6 +9,7 @@ import boardgame.Position;
 public abstract class ChessPiece extends Piece {
 	
 	private Color color; //{Black, White}
+	private int moveCount; // Contagem dos movimentos da peça
 	
 	public ChessPiece(Board board, Color color) {
 		super(board); 
@@ -18,6 +19,18 @@ public abstract class ChessPiece extends Piece {
 	// Getters e Setters: O método setColor foi apagado para impedir que a cor de uma peça seja alterada.
 	public Color getColor() {
 		return color;
+	}
+	
+	public int getMoveCount() {
+		return moveCount;
+	}
+	
+	public void increaseMoveCount() {
+		moveCount++;
+	}
+	
+	public void decreaseeMoveCount() {
+		moveCount--;
 	}
 	
 	public ChessPosition getChessPosition() {

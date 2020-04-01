@@ -95,9 +95,10 @@ public class ChessMatch {
 	}
 	
 	private Piece makeMove(Position source, Position target) {
-		Piece p = board.removePiece(source);
+		ChessPiece p = (ChessPiece)board.removePiece(source);
+		p.increaseMoveCount();
 		Piece capturedPiece = board.removePiece(target);
-		board.placePiece(p, target);
+		board.placePiece(p, target); // o "p" deste parãmetro é do tipo Piece, então é feito o UPCASTING de forma automatica
 		
 		if(capturedPiece != null) {
 			piecesOnTheBoard.remove(capturedPiece);
@@ -108,8 +109,9 @@ public class ChessMatch {
 	}
 	
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
-		Piece p = board.removePiece(target); // Guarda  a peça que foi retirada da posição de origem
-		board.placePiece(p, source); // Coloca a peça p na posição de origem
+		ChessPiece p = (ChessPiece)board.removePiece(target); // Remove  a peça que foi colocada na posição de destino
+		p.decreaseeMoveCount();
+		board.placePiece(p, source); // Coloca a peça de volta a sua posição de destino
 		
 		if (capturedPiece != null) {
 			board.placePiece(capturedPiece, target);
@@ -177,11 +179,11 @@ public class ChessMatch {
 			for (int i = 0; i < board.getRows(); i++) {
 				for (int j = 0; j < board.getRows(); j++) {
 					if(mat[i][j]) {
-						Position source = ((ChessPiece)p).getChessPosition().toPosition();
-						Position target = new Position(i, j);
-						Piece capturedPiece = makeMove(source, target);
+						Position source = ((ChessPiece)p).getChessPosition().toPosition(); //Pega a posição da peça
+						Position target = new Position(i, j); // Instancia a posição de destino
+						Piece capturedPiece = makeMove(source, target); // Faz o movimento da peça
 						boolean testCheck = testCheck(color); // Testa se o rei ainda está em cheque mesmo após o movimento
-						undoMove(source,target, capturedPiece);
+						undoMove(source,target, capturedPiece); // Desfaz o movimento após a checagem
 						if (!testCheck) {
 							return false;
 						}
