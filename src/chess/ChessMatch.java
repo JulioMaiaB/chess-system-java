@@ -22,8 +22,7 @@ public class ChessMatch {
 	private boolean check; // Por padrão é false
 	private boolean checkMate; // Por padrão é false
 
-	// Lista para controlar as peças que estão no tabuleiro e as peças que foram
-	// capturadas
+	// Lista para controlar as peças que estão no tabuleiro e as peças que foram capturadas
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
 
@@ -63,8 +62,7 @@ public class ChessMatch {
 	public ChessPiece[][] getPieces() {
 		// Quantidade de linhas e colunas do tabuleiro é o tamanho da matriz
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
-		// Percorre a Matriz da classe Board e retorna as de peças do tabuleiro do tipo
-		// ChessMatch
+		// Percorre a Matriz da classe Board e retorna as de peças do tabuleiro do tipo ChessMatch
 		for (int i = 0; i < board.getRows(); i++) {
 			for (int j = 0; j < board.getColumns(); j++) {
 				mat[i][j] = (ChessPiece) board.piece(i, j);
@@ -84,10 +82,14 @@ public class ChessMatch {
 		Position target = targetPosition.toPosition();
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
+
+		if (board.piece(source) instanceof King) {
+			validateCastlingMove(source, target);
+		}
+
 		Piece capturedPiece = makeMove(source, target);
 
-		if (testCheck(currentPlayer)) { // Se coloca em uma posição a qual é um possível movimento de uma peça
-										// adversária
+		if (testCheck(currentPlayer)) { // Se coloca em uma posição a qual é um possível movimento de uma peça() adversária
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("You cant't put yourself in check");
 		}
@@ -106,8 +108,7 @@ public class ChessMatch {
 		ChessPiece p = (ChessPiece) board.removePiece(source);
 		p.increaseMoveCount();
 		Piece capturedPiece = board.removePiece(target);
-		board.placePiece(p, target); // o "p" deste parãmetro é do tipo Piece, então é feito o UPCASTING de forma
-										// automatica
+		board.placePiece(p, target); // o "p" deste parãmetro é do tipo Piece, então é feito o UPCASTING de forma automatica
 
 		if (capturedPiece != null) {
 			piecesOnTheBoard.remove(capturedPiece);
@@ -169,8 +170,7 @@ public class ChessMatch {
 		if (!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position");
 		}
-		if (currentPlayer != ((ChessPiece) board.piece(position)).getColor()) { // Downcasting de Piece para ChessPiece
-																				// para usar o getColor()
+		if (currentPlayer != ((ChessPiece) board.piece(position)).getColor()) { // Downcasting de Piece para ChessPiece para usar o getColor()
 			throw new ChessException("The chosen piece is not yours!");
 		}
 		if (!board.piece(position).isThereAnyPossibleMove()) {
@@ -180,14 +180,40 @@ public class ChessMatch {
 
 	private void nextTurn() {
 		turn++; // Aumenta os turnos
-		currentPlayer = (getCurrentPlayer() == Color.WHITE) ? Color.BLACK : Color.WHITE; // Operador condicional
-																							// ternário
+		currentPlayer = (getCurrentPlayer() == Color.WHITE) ? Color.BLACK : Color.WHITE; // Operador condicional ternário
 	}
 
 	private void validateTargetPosition(Position source, Position target) {
 		if (!board.piece(source).possibleMove(target)) {
 			throw new ChessException("The chosen piece can't move to target position");
 		}
+	}
+	
+	private void validateCastlingMove(Position source, Position target) {
+		if (!canCastling(source, target)) {
+			throw new ChessException("You cannot castling if your king pass in a square that is dominated by an opponent piece");
+		}
+	}
+
+	private boolean canCastling(Position source, Position target) {
+		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == opponent(currentPlayer)).collect(Collectors.toList());
+		
+		Position p1 = new Position(source.getRow(), source.getColumn() + 1);
+		Position p2 = new Position(source.getRow(), source.getColumn() - 1);
+
+		for (Piece p : opponentPieces) {
+			if (target.getColumn() == source.getColumn() + 2) {
+				if (p.possibleMove(p1)) {
+					return false;
+				}
+			} 
+			else if (target.getColumn() == source.getColumn() - 2) {
+				if (p.possibleMove(p2)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private Color opponent(Color color) { // Dado uma cor, retorna o oponente desta cor
@@ -207,8 +233,7 @@ public class ChessMatch {
 
 	private boolean testCheck(Color color) { // Teste se o rei desta cor está em check
 		Position kingPosition = king(color).getChessPosition().toPosition();
-		List<Piece> opponentPieces = piecesOnTheBoard.stream()
-				.filter(x -> ((ChessPiece) x).getColor() == opponent(color)).collect(Collectors.toList());
+		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == opponent(color)).collect(Collectors.toList());
 		for (Piece p : opponentPieces) {
 			boolean[][] mat = p.possibleMoves();
 			if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
@@ -232,8 +257,7 @@ public class ChessMatch {
 						Position source = ((ChessPiece) p).getChessPosition().toPosition(); // Pega a posição da peça
 						Position target = new Position(i, j); // Instancia a posição de destino
 						Piece capturedPiece = makeMove(source, target); // Faz o movimento da peça
-						boolean testCheck = testCheck(color); // Testa se o rei ainda está em cheque mesmo após o
-																// movimento
+						boolean testCheck = testCheck(color); // Testa se o rei ainda está em cheque mesmo após o movimento
 						undoMove(source, target, capturedPiece); // Desfaz o movimento após a checagem
 						if (!testCheck) {
 							return false;

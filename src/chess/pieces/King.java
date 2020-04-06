@@ -14,7 +14,7 @@ public class King extends ChessPiece {
 		super(board, color);
 		this.chessMatch = chessMatch;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "K";
