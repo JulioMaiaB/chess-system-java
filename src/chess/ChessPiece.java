@@ -4,19 +4,19 @@ import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
 
-// Essa classe é uma subclasse da classe Piece. Terá a COR e  também outros elementos.
+// Essa classe Ã© uma subclasse da classe Piece. TerÃ¡ a COR e  tambÃ©m outros elementos.
 
 public abstract class ChessPiece extends Piece {
 	
 	private Color color; //{Black, White}
-	private int moveCount; // Contagem dos movimentos da peça
+	private int moveCount; // Contagem dos movimentos da peï¿½a
 	
 	public ChessPiece(Board board, Color color) {
 		super(board); 
 		this.color = color;
 	}
 	
-	// Getters e Setters: O método setColor foi apagado para impedir que a cor de uma peça seja alterada.
+	// Getters e Setters: O mï¿½todo setColor foi apagado para impedir que a cor de uma peï¿½a seja alterada.
 	public Color getColor() {
 		return color;
 	}
@@ -38,7 +38,7 @@ public abstract class ChessPiece extends Piece {
 	}
 	
 	protected boolean isThereOpponentPiece(Position position) {
-		ChessPiece p = (ChessPiece)getBoard().piece(position); //Retorna a peça na posição Position
+		ChessPiece p = (ChessPiece)getBoard().piece(position); //Retorna a peï¿½a na posiï¿½ï¿½o Position
 		return p != null && p.getColor() != color;
 	}
 	
