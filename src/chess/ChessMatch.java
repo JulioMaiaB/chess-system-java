@@ -22,6 +22,7 @@ public class ChessMatch {
 	private boolean check; // Por padr�o � false
 	private boolean checkMate; // Por padr�o � false
 	private ChessPiece enPassantVulnerable; // Recebe a peça que está vulnerável à en passant
+	private ChessPiece promoted; // Verifica se um peão foi promovido
 	
 	// Lista para controlar as pe�as que est�o no tabuleiro e as pe�as que foram capturadas
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
@@ -55,14 +56,18 @@ public class ChessMatch {
 	public ChessPiece getEnPassantVulnerable() {
 		return enPassantVulnerable;
 	}
-
+	
+	public ChessPiece getPromoted() {
+		return promoted;
+	}
+	
 	/*
-	 * - M�todo que retornar� uma matriz de pe�as de xadrez correspondentes a esta
-	 * partida (ChessMatch); - Para a aplica��o (application), ser� liberado as
-	 * pe�as do tipo ChessPiece (e n�o Piece) pois � um desenvolvimento em camadas;
-	 * - Sendo assim, ser� necess�rio liberar para o programa uma matriz do tipo
-	 * ChessPiece, da camada de Xadrez (chess) e n�o do tabuleiro (board) OBS:
-	 * LIBERA PARA A APLICA��O UMA PE�A CHESSPIECE
+	 * - Método que retornará uma matriz de peças de xadrez correspondentes a esta
+	 * partida (ChessMatch); - Para a aplicação (application), será liberado as
+	 * peças do tipo ChessPiece (e não Piece) pois é um desenvolvimento em camadas;
+	 * - Sendo assim, será necessário liberar para o programa uma matriz do tipo
+	 * ChessPiece, da camada de Xadrez (chess) e não do tabuleiro (board) OBS:
+	 * LIBERA PARA A APLICAÇÃO UMA PEÇA CHESSPIECE
 	 */
 	public ChessPiece[][] getPieces() {
 		// Quantidade de linhas e colunas do tabuleiro � o tamanho da matriz
@@ -88,17 +93,26 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		if (board.piece(source) instanceof King) {
-			validateCastlingMove(source, target);
+			validateCastlingMove(source, target); // Valida se pode fazer o roque
 		}
 
-		Piece capturedPiece = makeMove(source, target);
-
-		if (testCheck(currentPlayer)) { // Se coloca em uma posi��o a qual � um poss�vel movimento de uma pe�a() advers�ria
+		Piece capturedPiece = makeMove(source, target);			
+		
+		if (testCheck(currentPlayer)) { // Se coloca em uma posição a qual é um poss�vel movimento de uma peça adversária
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("You cant't put yourself in check");
 		}
 		
-		ChessPiece movedPiece = (ChessPiece)board.piece(target);
+		ChessPiece movedPiece = (ChessPiece)board.piece(target); // Guarda a peça que fez o movimento
+		
+		// #specialmove promotion 
+		promoted = null; // joga na variável promoted o valor nulo para assegurar ques está sendo feito um novo teste
+		if (movedPiece instanceof Pawn) {
+			if ((movedPiece.getColor() == Color.WHITE && target.getRow() == 0) || (movedPiece.getColor() == Color.BLACK && target.getRow() == 7	)){
+				promoted = (ChessPiece)board.piece(target);
+				promoted = replacePromotedPiece("Q");
+			}
+		}
 		
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 		
@@ -109,21 +123,49 @@ public class ChessMatch {
 		}
 		
 		// #specialmove en passant
-		if (movedPiece instanceof Pawn && (target.getRow() == source.getRow() - 2) || target.getRow() == source.getRow() + 2) {
+		// Verifica se a peça que se moveu é vulnerável ao en passant
+		if (movedPiece instanceof Pawn && (target.getRow() == source.getRow() - 2) || target.getRow() == source.getRow() + 2) { 
 			enPassantVulnerable = movedPiece;
 		}
 		else {
 			enPassantVulnerable = null;
 		}
 		
-		return (ChessPiece) capturedPiece; // Retorna a pe�a capturada para adicionar na lista de pe�as capturadas
+		return (ChessPiece) capturedPiece; // Retorna a peça capturada para adicionar na lista de peças capturadas
 	}
 
+	public ChessPiece replacePromotedPiece(String type) { // Método para retornar a nova peça desejada
+		if (promoted == null) {
+			throw new IllegalStateException("There is no piece to be promoted");
+		}
+		// Utilizado o .equals() para fazer a comparação pois String é do tipo classe e não do tipo primitivo
+		if (!type.equals("B") && !type.contentEquals("N") && !type.equals("R") && !type.equals("Q")) {
+			return promoted; // Caso tudo dẽ errado, retorna a peça que ja está na variável promoted
+		}
+		
+		Position pos = promoted.getChessPosition().toPosition(); // Posição da peça promovida
+		Piece p = board.removePiece(pos); // Remove a peça que estava lá anteriormente
+		piecesOnTheBoard.remove(p); // remove a peça capturada da lista de peças do tabuleiro
+		
+		ChessPiece newPiece = newPiece(type, promoted.getColor()); // Instancia uma nova peça
+		board.placePiece(newPiece, pos); // Coloca a peça instanciada no tabuleiro
+		piecesOnTheBoard.add(newPiece); // Adiciona a peça na lista de peças do tabuleiro
+		
+		return newPiece;
+	}
+	
+	private ChessPiece newPiece (String type, Color color) { // Método auxiliar para instanciar uma nova peça
+		if (type.equals("B")) return new Bishop(board, color);
+		if (type.equals("N")) return new Knight(board, color);
+		if (type.equals("Q")) return new Queen(board, color);
+		return new Rook(board, color);
+	}
+	
 	private Piece makeMove(Position source, Position target) {
 		ChessPiece p = (ChessPiece) board.removePiece(source);
 		p.increaseMoveCount();
 		Piece capturedPiece = board.removePiece(target);
-		board.placePiece(p, target); // o "p" deste par�metro � do tipo Piece, ent�o � feito o UPCASTING de forma automatica
+		board.placePiece(p, target); // o "p" deste parâmetro é do tipo Piece, então é feito o UPCASTING de forma automática
 
 		if (capturedPiece != null) {
 			piecesOnTheBoard.remove(capturedPiece);
@@ -153,12 +195,12 @@ public class ChessMatch {
 			if (source.getColumn() != target.getColumn() && capturedPiece == null) { // Significa que o peão andou na diagonal
 				Position pawnPosition;
 				if (p.getColor() == Color.WHITE) {
-					 pawnPosition = new Position(target.getRow() + 1, target.getColumn());
+					pawnPosition = new Position(target.getRow() + 1, target.getColumn()); // Posição abaixo do peão que moveu
 				}
 				else {
-					pawnPosition = new Position(target.getRow() - 1, target.getColumn());
+					pawnPosition = new Position(target.getRow() - 1, target.getColumn()); // Posição abaixo do peão que moveu
 				}
-				capturedPiece = board.removePiece(pawnPosition);
+				capturedPiece = board.removePiece(pawnPosition); // Remove do tabuleiro o peão que foi capturado
 				capturedPieces.add(capturedPiece);
 				piecesOnTheBoard.remove(capturedPiece);
 			}
@@ -201,10 +243,10 @@ public class ChessMatch {
 			if (source.getColumn() != target.getColumn() && capturedPiece == enPassantVulnerable) { // Significa que o peão andou na diagonal
 				ChessPiece pawn = (ChessPiece)board.removePiece(target);
 				Position pawnPosition;
-				if (p.getColor() == Color.WHITE) { // se a branca que capturou, tenho que devolver a peça preta
+				if (p.getColor() == Color.WHITE) { // se a branca que capturou, tenho que devolver a peça preta para a posição correta
 					 pawnPosition = new Position(3, target.getColumn());
 				}
-				else { // se a preta que capturou, tenho que devolver a peça branca
+				else { // se a preta que capturou, tenho que devolver a peça branca para a posição corretaa
 					pawnPosition = new Position(4, target.getColumn());
 				}
 				board.placePiece(pawn, pawnPosition);

@@ -42,14 +42,14 @@ public class Pawn extends ChessPiece {
 			}
 
 			// #specialmove en passant white
-			if (position.getRow() == 3) {
+			if (position.getRow() == 3) { // As peças brancas sempre vão estar na linha 5 do tabuleiro para tomar de passagem
 				Position left = new Position(position.getRow(), position.getColumn() - 1);
 				// A condição getBoard().piece(left) == chessMatch.getEnPassantVulnerable teste se a peça é vulnerável ao en passant
 				if (getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
 					mat[left.getRow() - 1][left.getColumn()] = true;
 				}
 			}
-			if (position.getRow() == 3) {
+			if (position.getRow() == 3) { // As peças brancas sempre vão estar na linha 5 do tabuleiro para tomar de passagem
 				Position right = new Position(position.getRow(), position.getColumn() + 1);
 				// A condição getBoard().piece(left) == chessMatch.getEnPassantVulnerable teste se a peça é vulnerável ao en passant
 				if (getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
@@ -76,14 +76,14 @@ public class Pawn extends ChessPiece {
 			}
 
 			// #specialmove en passant black
-			if (position.getRow() == 4) {
+			if (position.getRow() == 4) { // As peças pretas sempre vão estar na linha 4 do tabuleiro para tomar de passagem
 				Position left = new Position(position.getRow(), position.getColumn() - 1);
 				// A condição getBoard().piece(left) == chessMatch.getEnPassantVulnerable() testa se a peça é vulnerável ao en passant
 				if (getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
 					mat[left.getRow() + 1][left.getColumn()] = true;
 				}
 			}
-			if (position.getRow() == 4) {
+			if (position.getRow() == 4) { // As peças pretas sempre vão estar na linha 4 do tabuleiro para tomar de passagem
 				Position right = new Position(position.getRow(), position.getColumn() + 1);
 				// A condição getBoard().piece(left) == chessMatch.getEnPassantVulnerable() testa se a peça é vulnerável ao en passant
 				if (getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {

@@ -27,18 +27,29 @@ public class Program {
 				System.out.print("Source: ");
 				ChessPosition source = UI.readChessPosition(sc);
 				
-				boolean[][] possibleMoves = chessMatch.possibleMoves(source); //retorna os movimentos possiveis da peça {King, Rook}
+				boolean[][] possibleMoves = chessMatch.possibleMoves(source); //retorna os movimentos possiveis da peï¿½a {King, Rook}
 				UI.clearScreen();
-				UI.printBoard(chessMatch.getPieces(), possibleMoves);//Exibe o tabuleiro com os movimentos da peça escolhida
+				UI.printBoard(chessMatch.getPieces(), possibleMoves);//Exibe o tabuleiro com os movimentos da peï¿½a escolhida
 				System.out.println();
 				System.out.print("Target: ");
 				ChessPosition target = UI.readChessPosition(sc);
 				
 				ChessPiece capturedPiece = chessMatch.performChessMove(source, target);
 				
-				if(capturedPiece != null) { // significa que alguma peça foi capturada
-					captured.add(capturedPiece); // Adiciona na lista de peças capturadas
+				if(capturedPiece != null) { // significa que alguma peï¿½a foi capturada
+					captured.add(capturedPiece); // Adiciona na lista de peï¿½as capturadas
 				}
+				
+				if (chessMatch.getPromoted() != null) {
+					System.out.print("Enter piece for promotion (B/N/R/Q): ");
+					String type = sc.nextLine().toUpperCase(); // Converter a string digitada para maiÃºsculo
+					while(!type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q")) {
+						System.out.print("Invalid value! Enter piece for promotion (B/N/R/Q): ");
+						type = sc.nextLine().toUpperCase();
+					}
+					chessMatch.replacePromotedPiece(type);
+				}
+				
 			}
 			catch(ChessException e) {
 				System.out.println(e.getMessage());
